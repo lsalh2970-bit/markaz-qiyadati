@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مركز قيادتي الشخصي | يومي وعبادتي وعملي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg-decor"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">◈</div>
+    <div>
+      <div class="brand-title">مركز قيادتي</div>
+      <div class="brand-sub">يومي • عبادتي • عملي</div>
+    </div>
+  </div>
+  <nav class="nav" id="mainNav">
+    <button class="nav-btn active" data-page="dashboard"><span class="ico">🏠</span> لوحة التحكم</button>
+    <button class="nav-btn" data-page="prayer"><span class="ico">🕌</span> الصلاة</button>
+    <button class="nav-btn" data-page="adhkar"><span class="ico">🌿</span> الأذكار</button>
+    <button class="nav-btn" data-page="tasbih"><span class="ico">📿</span> المسبحة</button>
+    <button class="nav-btn" data-page="quran"><span class="ico">📖</span> القرآن والورد</button>
+    <button class="nav-btn" data-page="tasks"><span class="ico">✅</span> المهام</button>
+    <button class="nav-btn" data-page="projects"><span class="ico">🚀</span> المشاريع</button>
+    <button class="nav-btn" data-page="ideas"><span class="ico">💡</span> بنك الأفكار</button>
+    <button class="nav-btn" data-page="daily"><span class="ico">🗓️</span> يومي</button>
+    <button class="nav-btn" data-page="habits"><span class="ico">🔥</span> العادات</button>
+    <button class="nav-btn" data-page="reports"><span class="ico">📊</span> التقارير</button>
+    <button class="nav-btn" data-page="calendar"><span class="ico">📅</span> التقويم</button>
+    <button class="nav-btn" data-page="alerts"><span class="ico">🔔</span> التنبيهات</button>
+  </nav>
+  <div class="side-foot">
+    <div class="mini-card">
+      <div class="mini-label">إنجاز اليوم</div>
+      <div class="mini-bar"><div id="sideProgressFill"></div></div>
+      <div class="mini-val" id="sideProgressVal">0%</div>
+    </div>
+    <button class="btn ghost sm" id="exportBtn">⬇ تصدير نسخة احتياطية</button>
+    <label class="btn ghost sm file-label">⬆ استيراد<input type="file" id="importFile" accept=".json" hidden></label>
+  </div>
+</aside>
+<div class="overlay" id="overlay"></div>
+
+<!-- Main -->
+<main class="main">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn">☰</button>
+    <div class="top-greet">
+      <h1 id="greeting">صباح الخير 👋</h1>
+      <p><span id="gregDate">—</span> • <span id="hijriDate">—</span> • <span id="weekday">—</span></p>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeBtn" title="الوضع الليلي">🌙</button>
+      <button class="icon-btn bell" id="bellBtn" title="التنبيهات">🔔<span class="dot" id="bellDot" hidden></span></button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <section class="page active" id="page-dashboard">
+    <div class="quote-card"><span class="q-mark">❝</span><p id="dailyQuote">—</p></div>
+    <div class="grid stats-grid">
+      <div class="card stat highlight">
+        <div class="stat-label">نسبة إنجاز اليوم</div>
+        <div class="ring-wrap"><svg viewBox="0 0 120 120" class="ring"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/><text x="60" y="68" text-anchor="middle" class="ring-txt" id="ringTxt">0%</text></svg></div>
+        <div class="stat-sub"><span id="doneCount">0</span> مكتملة • <span id="leftCount">0</span> متبقية</div>
+      </div>
+      <div class="card stat prayer-next">
+        <div class="stat-label">🕌 الصلاة القادمة</div>
+        <div class="prayer-name" id="nextPrayerName">—</div>
+        <div class="prayer-time" id="nextPrayerTime">--:--</div>
+        <div class="countdown" id="prayerCountdown">--:--:--</div>
+        <button class="btn primary sm" onclick="go('prayer')">تسجيل الصلوات</button>
+      </div>
+      <div class="card stat">
+        <div class="stat-label">🔥 الالتزام الأسبوعي</div>
+        <div class="week-dots" id="weekDots"></div>
+        <div class="stat-sub" id="weekStreakTxt">—</div>
+        <button class="btn ghost sm" onclick="go('habits')">العادات</button>
+      </div>
+      <div class="card stat">
+        <div class="stat-label">📖 ورد القرآن اليوم</div>
+        <div class="big-num"><span id="dashQuranDone">0</span><small> / <span id="dashQuranTarget">10</span> صفحات</small></div>
+        <div class="bar"><div id="dashQuranBar"></div></div>
+        <button class="btn ghost sm" onclick="go('quran')">تسجيل الورد</button>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><h3>⭐ أهم 3 مهام اليوم</h3><button class="btn ghost sm" onclick="go('tasks')">كل المهام</button></div>
+        <div id="topTasks" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>🚀 المشاريع النشطة</h3><button class="btn ghost sm" onclick="go('projects')">الكل</button></div>
+        <div id="dashProjects" class="list"></div>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><h3>🌿 أذكار اليوم</h3><button class="btn ghost sm" onclick="go('adhkar')">فتح الأذكار</button></div>
+        <div id="dashAdhkar" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>📝 مراجعة سريعة</h3><button class="btn ghost sm" onclick="go('daily')">يومي</button></div>
+        <div class="quick-review">
+          <textarea id="quickNote" placeholder="سجّل أهم إنجاز اليوم بجملة واحدة..."></textarea>
+          <button class="btn primary sm" id="saveQuickNote">حفظ في مراجعة اليوم</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRAYER -->
+  <section class="page" id="page-prayer">
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><h3>🕌 مواقيت الصلاة</h3><span class="pill" id="prayerCityPill">—</span></div>
+        <div class="prayer-list" id="prayerList"></div>
+        <div class="next-box">القادمة: <b id="prayerNext2">—</b> • متبقي <b id="prayerCd2" class="mono">—</b></div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>⚙️ إعدادات الموقع والحساب</h3>
+          <div class="form-grid">
+            <label>المدينة<input id="setCity" placeholder="مثال: الرياض"></label>
+            <label>الدولة<input id="setCountry" placeholder="مثال: Saudi Arabia"></label>
+            <label>طريقة الحساب<select id="setMethod">
+              <option value="4">أم القرى (السعودية)</option>
+              <option value="3">رابطة العالم الإسلامي</option>
+              <option value="2">ISNA أمريكا</option>
+              <option value="5">الهيئة المصرية</option>
+              <option value="1">كراتشي</option>
+              <option value="0">جيبسون/جعفري</option>
+            </select></label>
+            <label>التنبيه قبل الصلاة (دقيقة)<input type="number" id="setRemind" min="0" max="60" value="10"></label>
+          </div>
+          <div class="row">
+            <button class="btn primary sm" id="savePrayerSettings">حفظ الإعدادات</button>
+            <button class="btn ghost sm" id="geoBtn">📍 تحديد موقعي تلقائيًا</button>
+          </div>
+          <details class="offsets"><summary>تعديل فروقات الأوقات يدويًا (بالدقائق)</summary>
+            <div class="form-grid" id="offsetGrid"></div>
+          </details>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>✅ تسجيل صلوات اليوم</h3><span class="pill" id="prayerScore">0 / 5</span></div>
+          <div id="prayerCheck" class="prayer-check"></div>
+          <div class="stat-sub">الأسبوع: <b id="weekPrayerScore">—</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADHKAR -->
+  <section class="page" id="page-adhkar">
+    <div class="tabs" id="adhkarTabs"></div>
+    <div class="card">
+      <div class="bar"><div id="adhkarCatBar"></div></div>
+      <div class="stat-sub" id="adhkarCatTxt">—</div>
+    </div>
+    <div id="adhkarList" class="grid two"></div>
+    <div class="card">
+      <h3>➕ إضافة ذكر مخصص</h3>
+      <div class="form-grid">
+        <label>نص الذكر<input id="customDhikrText"></label>
+        <label>التكرار المطلوب<input type="number" id="customDhikrCount" value="33" min="1"></label>
+        <label>التصنيف<select id="customDhikrCat"></select></label>
+      </div>
+      <button class="btn primary sm" id="addCustomDhikr">إضافة الذكر</button>
+    </div>
+  </section>
+
+  <!-- TASBIH -->
+  <section class="page" id="page-tasbih">
+    <div class="grid two">
+      <div class="card tasbih-main">
+        <div class="tasbih-dhikr" id="tasbihDhikr">سبحان الله</div>
+        <div class="tasbih-count" id="tasbihCount">0</div>
+        <div class="tasbih-target">الهدف: <span id="tasbihTarget">100</span> • الدورة: <span id="tasbihRound">1</span></div>
+        <div class="tasbih-bar bar"><div id="tasbihBar"></div></div>
+        <div class="tasbih-btns">
+          <button class="btn tasbih-plus" id="tasbihPlus">+ تسبيحة</button>
+          <div class="row center">
+            <button class="btn ghost sm" id="tasbihReset">تصفير</button>
+            <button class="btn ghost sm" id="tasbihSave">💾 حفظ الجلسة</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <label>الذكر<select id="tasbihSelect"></select></label>
+          <label>ذكر مخصص<input id="tasbihCustom" placeholder="اكتب ذكرًا..."></label>
+        </div>
+        <div class="row">
+          <button class="btn ghost sm" id="tasbihUseCustom">استخدام المخصص</button>
+          <label>الهدف<input type="number" id="tasbihTargetInput" value="100" min="1" style="width:90px"></label>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📜 سجل المسبحة</h3>
+        <div class="row"><div class="stat-sub">إجمالي اليوم: <b id="tasbihTodayTotal">0</b></div><button class="btn ghost sm" id="clearTasbih">مسح السجل</button></div>
+        <div id="tasbihLog" class="list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QURAN -->
+  <section class="page" id="page-quran">
+    <div class="grid two">
+      <div class="card">
+        <h3>📖 ورد اليوم</h3>
+        <div class="form-grid">
+          <label>المستهدف (صفحات)<input type="number" id="qTarget" min="1" value="10"></label>
+          <label>السورة<input id="qSurah" placeholder="مثال: البقرة"></label>
+        </div>
+        <button class="btn primary sm" id="saveQTarget">حفظ المستهدف</button>
+        <div class="big-num" style="margin-top:12px"><span id="qDone">0</span><small> / <span id="qTargetTxt">10</span> صفحات</small></div>
+        <div class="bar big"><div id="qBar"></div></div>
+        <div class="stat-sub" id="qPct">0%</div>
+        <h4 style="margin-top:14px">تسجيل إنجاز</h4>
+        <div class="form-grid">
+          <label>النوع<select id="qType"><option value="تلاوة">تلاوة</option><option value="حفظ جديد">حفظ جديد</option><option value="مراجعة">مراجعة</option><option value="استماع">استماع</option></select></label>
+          <label>الصفحات<input type="number" id="qPages" value="2" min="1"></label>
+          <label>ملاحظة<input id="qNote" placeholder="من آية.. إلى.."></label>
+        </div>
+        <button class="btn primary sm" id="addQuran">تسجيل</button>
+      </div>
+      <div>
+        <div class="card"><h3>📊 إحصائيات</h3><div id="quranStats" class="list"></div></div>
+        <div class="card"><h3>🗒️ سجل القرآن</h3><div id="quranLog" class="list"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASKS -->
+  <section class="page" id="page-tasks">
+    <div class="card">
+      <h3>➕ مهمة جديدة</h3>
+      <div class="form-grid">
+        <label>اسم المهمة*<input id="tTitle" placeholder="ماذا ستفعل؟"></label>
+        <label>التاريخ<input type="date" id="tDate"></label>
+        <label>الوقت<input type="time" id="tTime"></label>
+        <label>الأولوية<select id="tPriority"><option value="عادية">🟢 عادية</option><option value="مهمة">🟠 مهمة</option><option value="عاجلة">🔴 عاجلة</option></select></label>
+        <label>التصنيف<select id="tCat"><option>عبادة</option><option>عمل</option><option>شخصي</option><option>أسرة</option><option>تعلم</option><option>أخرى</option></select></label>
+        <label>المشروع<select id="tProject"><option value="">— بدون مشروع —</option></select></label>
+        <label>التكرار<select id="tRepeat"><option value="">بدون تكرار</option><option value="يومي">يومي</option><option value="أسبوعي">أسبوعي</option></select></label>
+        <label>المدة (دقيقة)<input type="number" id="tDur" value="30" min="5"></label>
+      </div>
+      <label style="display:block;margin:8px 0">الوصف / الملاحظات<textarea id="tDesc" rows="2" placeholder="تفاصيل إضافية..."></textarea></label>
+      <div class="row"><button class="btn primary" id="addTask">إضافة المهمة</button><button class="btn ghost sm" id="clearDoneTasks">مسح المكتملة</button></div>
+    </div>
+    <div class="tabs" id="taskTabs">
+      <button class="tab active" data-f="all">الكل</button>
+      <button class="tab" data-f="today">اليوم</button>
+      <button class="tab" data-f="new">جديدة</button>
+      <button class="tab" data-f="doing">قيد التنفيذ</button>
+      <button class="tab" data-f="done">مكتملة</button>
+      <button class="tab" data-f="delayed">مؤجلة</button>
+    </div>
+    <div id="taskList" class="list"></div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="page" id="page-projects">
+    <div class="card">
+      <h3>🚀 مشروع جديد</h3>
+      <div class="form-grid">
+        <label>اسم المشروع*<input id="pName" placeholder="مثال: مشروع وقاية"></label>
+        <label>البداية<input type="date" id="pStart"></label>
+        <label>النهاية<input type="date" id="pEnd"></label>
+        <label>الأولوية<select id="pPriority"><option>🟢 عادية</option><option>🟠 مهمة</option><option>🔴 عاجلة</option></select></label>
+      </div>
+      <label style="display:block;margin:8px 0">الوصف<textarea id="pDesc" rows="2"></textarea></label>
+      <label style="display:block;margin:8px 0">المراحل (افصل بفاصلة ،)<input id="pPhases" placeholder="التخطيط، إعداد المحتوى، التنفيذ، التقييم"></label>
+      <button class="btn primary sm" id="addProject">إنشاء المشروع</button>
+    </div>
+    <div id="projectList" class="grid two"></div>
+  </section>
+
+  <!-- IDEAS -->
+  <section class="page" id="page-ideas">
+    <div class="card">
+      <h3>💡 فكرة جديدة — سجّلها بسرعة</h3>
+      <div class="form-grid">
+        <label>العنوان*<input id="iTitle" placeholder="عنوان الفكرة"></label>
+        <label>التصنيف<select id="iCat"><option>عبادة</option><option>عمل</option><option>مشروع</option><option>تعلم</option><option>أسرة</option><option>أخرى</option></select></label>
+        <label>الأهمية<select id="iImp"><option>⭐</option><option>⭐⭐</option><option>⭐⭐⭐</option></select></label>
+        <label>الحالة<select id="iStatus"><option>💡 فكرة جديدة</option><option>🔍 قيد الدراسة</option><option>🚀 قابلة للتنفيذ</option><option>✅ تم تنفيذها</option><option>🗑️ مؤجلة</option></select></label>
+      </div>
+      <label style="display:block;margin:8px 0">الوصف<textarea id="iDesc" rows="2"></textarea></label>
+      <button class="btn primary sm" id="addIdea">حفظ الفكرة</button>
+    </div>
+    <div id="ideaList" class="grid two"></div>
+  </section>
+
+  <!-- DAILY -->
+  <section class="page" id="page-daily">
+    <div class="grid two">
+      <div class="card"><h3>🕌 عبادتي</h3><div id="dailyIbada"></div></div>
+      <div class="card"><h3>💼 عملي — أهم 3 مهام</h3><div id="dailyWork"></div><label>الاجتماعات والمواعيد<textarea id="dailyMeetings" rows="2" placeholder="مثال: 10:00 اجتماع..."></textarea></label></div>
+    </div>
+    <div class="grid two">
+      <div class="card"><h3>🌸 شخصي</h3><div id="dailyPersonal"></div></div>
+      <div class="card"><h3>🌙 مراجعة اليوم</h3>
+        <div class="form-grid">
+          <label>ماذا أنجزت؟<input id="r1"></label>
+          <label>ماذا لم أنجز؟<input id="r2"></label>
+          <label>أهم إنجاز<input id="r3"></label>
+          <label>ما الذي أحتاج تحسينه؟<input id="r4"></label>
+          <label>أهم شيء غدًا<input id="r5"></label>
+        </div>
+        <button class="btn primary sm" id="saveReview">حفظ المراجعة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HABITS -->
+  <section class="page" id="page-habits">
+    <div class="card">
+      <h3>🔥 عادة جديدة</h3>
+      <div class="form-grid">
+        <label>اسم العادة<input id="hName" placeholder="مثال: الرياضة"></label>
+        <label>الأيقونة<input id="hIcon" placeholder="🏃" value="⭐"></label>
+      </div>
+      <div class="row"><button class="btn primary sm" id="addHabit">إضافة</button><button class="btn ghost sm" id="seedHabits">إضافة العادات المقترحة</button></div>
+    </div>
+    <div id="habitList" class="grid two"></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="page" id="page-reports">
+    <div class="tabs" id="reportTabs">
+      <button class="tab active" data-r="day">اليومي</button>
+      <button class="tab" data-r="week">الأسبوعي</button>
+      <button class="tab" data-r="month">الشهري</button>
+    </div>
+    <div class="card"><h3 id="reportTitle">التقرير اليومي</h3><div id="reportBody"></div></div>
+    <div class="card"><h3>📈 الإنتاجية الشهرية</h3><div class="chart" id="monthChart"></div></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="page" id="page-calendar">
+    <div class="card">
+      <div class="card-head"><button class="btn ghost sm" id="calPrev">‹</button><h3 id="calTitle">—</h3><button class="btn ghost sm" id="calNext">›</button></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="card"><h3>تفاصيل اليوم المحدد: <span id="calSelDate">—</span></h3><div id="calDetail" class="list"></div></div>
+  </section>
+
+  <!-- ALERTS -->
+  <section class="page" id="page-alerts">
+    <div class="grid two">
+      <div class="card">
+        <h3>🔔 التنبيهات الذكية</h3>
+        <div class="form-grid">
+          <label><input type="checkbox" id="nPrayer" checked> تنبيه الصلاة</label>
+          <label><input type="checkbox" id="nAdhkar" checked> تنبيه الأذكار (صباحًا 6ص ومساءً 5م)</label>
+          <label><input type="checkbox" id="nTasks" checked> تنبيه المهام (9ص يوميًا)</label>
+          <label><input type="checkbox" id="nHabits" checked> تنبيه العادات (10م)</label>
+        </div>
+        <div class="row"><button class="btn primary sm" id="saveNotif">حفظ</button><button class="btn ghost sm" id="enableBrowserNotif">تفعيل إشعارات المتصفح</button><button class="btn ghost sm" id="testNotif">تجربة تنبيه</button></div>
+      </div>
+      <div class="card"><div class="card-head"><h3>📥 صندوق التنبيهات</h3><button class="btn ghost sm" id="clearNotif">مسح الكل</button></div><div id="notifBox" class="list"></div></div>
+    </div>
+  </section>
+
+  <footer class="foot">صُنع بعناية لتنظيم يومك • بياناتك محفوظة على جهازك فقط 🔒</footer>
+</main>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="active" data-page="dashboard">🏠<small>الرئيسية</small></button>
+  <button data-page="prayer">🕌<small>الصلاة</small></button>
+  <button data-page="adhkar">🌿<small>الأذكار</small></button>
+  <button data-page="tasbih">📿<small>المسبحة</small></button>
+  <button data-page="tasks">✅<small>المهام</small></button>
+</nav>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Modal -->
+<div class="modal-back" id="modalBack" hidden><div class="modal" id="modalBox"></div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
